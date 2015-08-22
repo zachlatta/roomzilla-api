@@ -39,7 +39,7 @@ def today():
             id = int(booking_div.get('reservation_id'))
 
             # Extract the start and end time from the tooltip
-            parsed_tooltip = re.match(r'(?P<title>.*) - (?P<author>.*) \((?P<start_time>.*)-(?P<end_time>.*)\)', tooltip).groupdict()
+            parsed_tooltip = re.match(r'(?P<purpose>.*) - (?P<host>.*) \((?P<start_time>.*)-(?P<end_time>.*)\)', tooltip).groupdict()
 
             # Create a full datetime for today from extracted start and end
             # times
@@ -49,8 +49,8 @@ def today():
                                         datetime.strptime(parsed_tooltip['end_time'], TIMELINE_TIME_FORMAT).time())
 
             booking['id'] = id
-            booking['title'] = parsed_tooltip['title']
-            booking['author'] = parsed_tooltip['author']
+            booking['purpose'] = parsed_tooltip['purpose']
+            booking['host'] = parsed_tooltip['host']
             booking['start_time'] = start_time.isoformat()
             booking['end_time'] = end_time.isoformat()
 
