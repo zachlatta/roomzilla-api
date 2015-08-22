@@ -39,8 +39,8 @@ def parse_bookings(booking_list):
 
     return bookings
 
-@app.route('/')
-def today():
+@app.route('/rooms')
+def rooms():
     r = requests.get('http://' + ROOMZILLA_SUBDOMAIN + '.roomzilla.net/', auth=('', ROOMZILLA_PASSWORD))
     soup = BeautifulSoup(r.text, 'html.parser')
 
