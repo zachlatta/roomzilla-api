@@ -58,6 +58,7 @@ def rooms():
         tds = tr.find_all('td')
         bookings = tds[3].find(class_='timeline')
 
+        room['id'] = bookings.find('div').get('room_keyname')
         room['floor'] = int(tds[0].text)
         room['name'] = tds[1].text.strip()
         room['description'] = tds[1].find('a').get('title')
