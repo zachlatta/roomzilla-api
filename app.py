@@ -39,19 +39,9 @@ def parse_bookings(booking_list):
 
     return bookings
 
-@app.route('/rooms')
-def rooms():
-    day = request.args.get('day', date.today().isoformat())
-    r = requests.get('http://' + ROOMZILLA_SUBDOMAIN + '.roomzilla.net/rooms?day=' + day, auth=('', ROOMZILLA_PASSWORD))
-    soup = BeautifulSoup(r.text, 'html.parser')
-
+def parse_rooms(page):
     rooms = []
-    resp = {
-        'date': day,
-        'rooms': rooms,
-    }
-
-    timeline = soup.find(id='timeline')
+    timeline = page.find(id='timeline')
 
     for tr in timeline.find('tbody').find_all('tr'):
         room = {}
@@ -66,6 +56,24 @@ def rooms():
         room['bookings'] = parse_bookings(bookings)
 
         rooms.append(room)
+
+    return rooms
+
+@app.route('/rooms')
+@app.route('/rooms/<room>')
+def get_room(room=None):
+    day = request.args.get('day', date.today().isoformat())
+
+    path = '/rooms/{}'.format(room) if room else '/rooms'
+    url = 'http://{}.roomzilla.net{}?day={}'.format(ROOMZILLA_SUBDOMAIN, path, day)
+
+    r = requests.get(url, auth=('', ROOMZILLA_PASSWORD))
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    resp = {
+        'date': day,
+        'rooms': parse_rooms(soup),
+    }
 
     return jsonify(**resp)
 
