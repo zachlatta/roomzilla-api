@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from datetime import date, time, datetime, timedelta
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import os
 import re
 import requests
@@ -41,11 +41,15 @@ def parse_bookings(booking_list):
 
 @app.route('/rooms')
 def rooms():
-    r = requests.get('http://' + ROOMZILLA_SUBDOMAIN + '.roomzilla.net/', auth=('', ROOMZILLA_PASSWORD))
+    day = request.args.get('day', date.today().isoformat())
+    r = requests.get('http://' + ROOMZILLA_SUBDOMAIN + '.roomzilla.net/rooms?day=' + day, auth=('', ROOMZILLA_PASSWORD))
     soup = BeautifulSoup(r.text, 'html.parser')
 
     rooms = []
-    resp = {'rooms': rooms}
+    resp = {
+        'date': day,
+        'rooms': rooms,
+    }
 
     timeline = soup.find(id='timeline')
 
