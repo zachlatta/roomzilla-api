@@ -77,5 +77,9 @@ def get_room(room=None):
 
     return jsonify(**resp)
 
+@app.route('/ping')
+def ping():
+    return 'Pong!'
+
 if __name__ == "__main__":
     app.run(debug=True)
